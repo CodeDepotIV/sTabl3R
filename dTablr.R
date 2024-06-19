@@ -1,16 +1,3 @@
-setwd("E:\\Ackerman05_PE_Twins_VT\\Draft_Tables")
-
-table <- read.csv("For_Demographics_Table.csv")
-
-#library(tableone)
-library(tidyverse)
-
-table %>% select(Case_ID1, Group, Mat_age, Gravidity, Parity,
-                 Mother_Race, Mother_Hispanic_Ethnicity, 
-                 Gestational_age_at_delivery_.wks.days.) %>%  
-  rename(GAD.wks = Gestational_age_at_delivery_.wks.days.) %>% 
-  mutate(Group = factor(Group)) -> df
-
 check_input <- function(df, group) {
   # Check to see if 'df' is a data frame
   if (!is.data.frame(df)) {
@@ -143,7 +130,6 @@ generate_statistics <- function(df, group = "Group"){
       parsed_results$test_statistic <- unname(res_stats$mann_whitney$statistic)
       parsed_results$p_value <- res_stats$mann_whitney$p.value
     }
-    
     return(parsed_results)
   }
   
@@ -380,7 +366,7 @@ generate_results_tables <- function(results){
     extracted_cats_stats[[names(categorical_results)[i]]] <-
       categorical_results[[i]][2:5]
   }
-  #combined_cats_table <- do.call(rbind, extracted_cats_tables) 
+
   combined_cats_stats <- do.call(cbind, extracted_cats_stats) |> t() |> 
     as.data.frame()
   combined_cats_stats$Stat_Test <- unlist(combined_cats_stats$Stat_Test)
@@ -481,33 +467,3 @@ generate_results_tables <- function(results){
   print_cat_tables(final_cts_table, extracted_cats_tables)
   return(flextables_list)
 }
-
-df2 <- rbind(df, df[1,])
-
-df$Q2 <- table$Q2  
-df$Q2 <- NULL
-
-group1 <- c(rep("0",2), rep("1",0), rep("2",0), rep("3+",0), rep("NP",8))
-group2 <- c(rep("0",5), rep("1",0), rep("2",0), rep("3+",0), rep("NP",4))
-group4 <- c(rep("0",0), rep("1",1), rep("2",3), rep("3+",2), rep("NP",1))
-group6 <- c(rep("0",2), rep("1",0), rep("2",2), rep("3+",5), rep("NP",1))
-group7 <- c(rep("0",1), rep("1",0), rep("2",8), rep("3+",5), rep("NP",1))
-Group <- c(rep("Gr1", length(group1)),
-           rep("Gr2", length(group2)),
-           rep("Gr4", length(group4)),
-           rep("Gr6", length(group6)),
-           rep("Gr7", length(group7)) )
-df$Dipcat <- c(group1, group2, group4, group6, group7)
-
-
-# One group error checking
-# Get the ns and NAs
-
-
-
-
-results <- generate_statistics(df)
-generate_results_tables(results)
-
-
-

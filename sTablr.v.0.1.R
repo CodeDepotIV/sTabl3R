@@ -13,6 +13,13 @@ check_input <- function(df, group) {
   if (!group %in% names(df)) {
     stop(paste("The group argument", group, "is not a column in the dataframe."))
   }
+  # Coerce group to factor if it is no already a factor
+  if (!is.factor(df[[group]])) {
+    df[[group]] <- as.factor(df[[group]])
+  }
+  # Arrange the dataframe so the group variable is the second column
+  df <- df[, c(1, which(names(df) == group), 
+               setdiff(2:ncol(df), which(names(df) == group)))]
   # Return the modified dataframe
   return(df)
 }
@@ -407,158 +414,185 @@ generate_results_tables <- function(results){
   }
   
   function_sTable <- function(results){
+    
+    # Continuous results ----
     continuous_results <- results$Continuous
-    # Empty list for extracted tables
-    extracted_cts_tables <- extracted_cts_stats <- list()
-    # Extract tables and stats x
-    for (i in seq_along(continuous_results)) {
-      extracted_cts_tables[[names(continuous_results)[i]]] <-
-        continuous_results[[i]]$Table
-      extracted_cts_stats[[names(continuous_results)[i]]] <-
-        continuous_results[[i]][2:5]
-    }
-    # Combine and put into a dataframe
-    combined_cts_table <- do.call(rbind, extracted_cts_tables) |> as.data.frame()
-    combined_cts_stats <- do.call(cbind, extracted_cts_stats) |> t() |> as.data.frame()
-    combined_cts_stats$Stat_Test <- unlist(combined_cts_stats$Stat_Test)
-    combined_cts_stats$Stat_Name <- unlist(combined_cts_stats$Stat_Name)
-    combined_cts_stats$Test_Statistic <- unlist(combined_cts_stats$Test_Statistic)
-    combined_cts_stats$P_Value <- unlist(combined_cts_stats$P_Value )
-    combined_cts_stats$Test_Statistic <-
-      round(as.numeric(combined_cts_stats$Test_Statistic), 2)
-    combined_cts_stats$P_Value <-
-      signif(as.numeric(combined_cts_stats$P_Value), digits = 2)
     
-    penult_cts_table <- cbind(combined_cts_table, combined_cts_stats)
-    final_cts_table <- rflexbind(results$Counts, penult_cts_table)
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0) {
     
-    generate_cts_flextable <- function(cts_table) {
-      ft <- cts_table %>% rownames_to_column("rowname") %>% 
-        flextable::flextable()
-      ft <- flextable::add_header_lines(ft, values = "Continuous Variables", 
-                                        top = TRUE)
-      ft <- flextable::set_header_labels(ft,
-                                         rowname = "",
-                                         Stat_Test = "Test",
-                                         Stat_Name = "Statisic",
-                                         Test_Statistic = "Value",
-                                         P_Value = "p-val")
-      ft <- flextable::add_footer_lines(ft, "Mean ± SD or Median [IQR]")
-      ft <- flextable::set_table_properties(ft, width = 0.8, layout = "autofit")
-      ft <- flextable::theme_vanilla(ft)
-      return(ft)
-    }
-    
-    categorical_results <- results$Categorical
-    # Empty list for extracted tables
-    extracted_cats_tables <- extracted_cats_stats <- list()
-    for (i in seq_along(categorical_results)) {
-      extracted_cats_tables[[names(categorical_results)[i]]] <-
-        categorical_results[[i]]$Table
-      extracted_cats_stats[[names(categorical_results)[i]]] <-
-        categorical_results[[i]][2:5]
+      # Empty list for extracted tables
+      extracted_cts_tables <- extracted_cts_stats <- list()
+      # Extract tables and stats x
+      for (i in seq_along(continuous_results)) {
+        extracted_cts_tables[[names(continuous_results)[i]]] <-
+          continuous_results[[i]]$Table
+        extracted_cts_stats[[names(continuous_results)[i]]] <-
+          continuous_results[[i]][2:5]
+      }
+      # Combine and put into a dataframe
+      combined_cts_table <- do.call(rbind, extracted_cts_tables) |> as.data.frame()
+      combined_cts_stats <- do.call(cbind, extracted_cts_stats) |> t() |> as.data.frame()
+      combined_cts_stats$Stat_Test <- unlist(combined_cts_stats$Stat_Test)
+      combined_cts_stats$Stat_Name <- unlist(combined_cts_stats$Stat_Name)
+      combined_cts_stats$Test_Statistic <- unlist(combined_cts_stats$Test_Statistic)
+      combined_cts_stats$P_Value <- unlist(combined_cts_stats$P_Value )
+      combined_cts_stats$Test_Statistic <-
+        round(as.numeric(combined_cts_stats$Test_Statistic), 2)
+      combined_cts_stats$P_Value <-
+        signif(as.numeric(combined_cts_stats$P_Value), digits = 2)
+      
+      penult_cts_table <- cbind(combined_cts_table, combined_cts_stats)
+      final_cts_table <- rflexbind(results$Counts, penult_cts_table)
+      
+      generate_cts_flextable <- function(cts_table) {
+        ft <- cts_table %>% rownames_to_column("rowname") %>% 
+          flextable::flextable()
+        ft <- flextable::add_header_lines(ft, values = "Continuous Variables", 
+                                          top = TRUE)
+        ft <- flextable::set_header_labels(ft,
+                                           rowname = "",
+                                           Stat_Test = "Test",
+                                           Stat_Name = "Statisic",
+                                           Test_Statistic = "Value",
+                                           P_Value = "p-val")
+        ft <- flextable::add_footer_lines(ft, "Mean ± SD or Median [IQR]")
+        ft <- flextable::set_table_properties(ft, width = 0.8, layout = "autofit")
+        ft <- flextable::theme_vanilla(ft)
+        return(ft)
+      }
     }
     
-    combined_cats_stats <- do.call(cbind, extracted_cats_stats) |> t() |> 
-      as.data.frame()
-    combined_cats_stats$Stat_Test <- unlist(combined_cats_stats$Stat_Test)
-    combined_cats_stats$Stat_Name <- unlist(combined_cats_stats$Stat_Name)
-    combined_cats_stats$Test_Statistic <- unlist(combined_cats_stats$Test_Statistic)
-    combined_cats_stats$P_Value <- unlist(combined_cats_stats$P_Value )
-    numeric_test_stat <- 
-      suppressWarnings(as.numeric(combined_cats_stats$Test_Statistic))
-    combined_cats_stats$Test_Statistic <- ifelse(
-      !is.na(numeric_test_stat),
-      round(as.numeric(numeric_test_stat), 2),
-      "none"
-    )
-    combined_cats_stats$P_Value <-
-      signif(as.numeric(combined_cats_stats$P_Value), digits = 2)
-    
-    add_custom_margins <- function(table, stats) {
-      n_fillers <- nrow(table) - 1
-      fillers <- rep("", n_fillers)
-      # Combine stats and fillers
-      Stat_Test <- c(stats$Stat_Test, fillers)
-      Stat_Name <- c(stats$Stat_Name, fillers)
-      Test_Statistic <- c(stats$Test_Statistic, fillers)
-      P_Value <- c(stats$P_Value, fillers)
-      # Add the custom margins to the table
-      new_table <- 
-        suppressWarnings(suppressMessages(
-          addmargins(table, margin = c(2,2,2,2), 
-                     FUN = list(function(x) Stat_Test,
-                                function(x) Stat_Name,
-                                function(x) Test_Statistic,
-                                function(x) P_Value), 
-                     quiet = TRUE)
-        ))
-      # Rename the margins
-      dimnames(new_table)[[2]][(ncol(table)+1):(ncol(table)+4)] <-
-        c("Stat_Test", "Stat_Name", "Test_Statistic", "P_Value")
-      return(new_table)
-    }
-    
-    for (index in names(extracted_cats_tables)) {
-      # Extract the corresponding stats for the table
-      stats <- combined_cats_stats[index, ]
-      # Get the contingency table
-      table <- extracted_cats_tables[[index]]
-      # Add custom margins
-      new_table <- add_custom_margins(table, stats)
-      # Overwrite the output
-      extracted_cats_tables[[index]] <- new_table
-    }
-    
-    generate_cats_flextable <- function(table_name, tables_list) {
-      catvar_df <- as.data.frame.matrix(tables_list[[table_name]])
-      ft <- catvar_df %>% rownames_to_column("rowname") %>% 
-        flextable::flextable()
-      ft <- flextable::add_header_lines(ft, 
-                                        values = paste0("Categorical Variable: ",
-                                                        table_name), 
-                                        top = TRUE)
-      ft <- flextable::set_header_labels(ft,
-                                         rowname = table_name,
-                                         Stat_Test = "Test",
-                                         Stat_Name = "Statistic",
-                                         Test_Statistic = "Value",
-                                         P_Value = "p-val")
-      ft <- flextable::add_footer_lines(ft, "n (%)")
-      ft <- flextable::set_table_properties(ft, width = 0.8, layout = "autofit")
-      ft <- flextable::theme_vanilla(ft)
-      return(ft)
+    # Categorical results ----
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+      categorical_results <- results$Categorical
+      # Empty list for extracted tables
+      extracted_cats_tables <- extracted_cats_stats <- list()
+      for (i in seq_along(categorical_results)) {
+        extracted_cats_tables[[names(categorical_results)[i]]] <-
+          categorical_results[[i]]$Table
+        extracted_cats_stats[[names(categorical_results)[i]]] <-
+          categorical_results[[i]][2:5]
+      }
+      
+      combined_cats_stats <- do.call(cbind, extracted_cats_stats) |> t() |> 
+        as.data.frame()
+      combined_cats_stats$Stat_Test <- unlist(combined_cats_stats$Stat_Test)
+      combined_cats_stats$Stat_Name <- unlist(combined_cats_stats$Stat_Name)
+      combined_cats_stats$Test_Statistic <- unlist(combined_cats_stats$Test_Statistic)
+      combined_cats_stats$P_Value <- unlist(combined_cats_stats$P_Value )
+      numeric_test_stat <- 
+        suppressWarnings(as.numeric(combined_cats_stats$Test_Statistic))
+      combined_cats_stats$Test_Statistic <- ifelse(
+        !is.na(numeric_test_stat),
+        round(as.numeric(numeric_test_stat), 2),
+        "none"
+      )
+      combined_cats_stats$P_Value <-
+        signif(as.numeric(combined_cats_stats$P_Value), digits = 2)
+      
+      add_custom_margins <- function(table, stats) {
+        n_fillers <- nrow(table) - 1
+        fillers <- rep("", n_fillers)
+        # Combine stats and fillers
+        Stat_Test <- c(stats$Stat_Test, fillers)
+        Stat_Name <- c(stats$Stat_Name, fillers)
+        Test_Statistic <- c(stats$Test_Statistic, fillers)
+        P_Value <- c(stats$P_Value, fillers)
+        # Add the custom margins to the table
+        new_table <- 
+          suppressWarnings(suppressMessages(
+            addmargins(table, margin = c(2,2,2,2), 
+                       FUN = list(function(x) Stat_Test,
+                                  function(x) Stat_Name,
+                                  function(x) Test_Statistic,
+                                  function(x) P_Value), 
+                       quiet = TRUE)
+          ))
+        # Rename the margins
+        dimnames(new_table)[[2]][(ncol(table)+1):(ncol(table)+4)] <-
+          c("Stat_Test", "Stat_Name", "Test_Statistic", "P_Value")
+        return(new_table)
+      }
+      
+      for (index in names(extracted_cats_tables)) {
+        # Extract the corresponding stats for the table
+        stats <- combined_cats_stats[index, ]
+        # Get the contingency table
+        table <- extracted_cats_tables[[index]]
+        # Add custom margins
+        new_table <- add_custom_margins(table, stats)
+        # Overwrite the output
+        extracted_cats_tables[[index]] <- new_table
+      }
+      
+      generate_cats_flextable <- function(table_name, tables_list) {
+        catvar_df <- as.data.frame.matrix(tables_list[[table_name]])
+        ft <- catvar_df %>% rownames_to_column("rowname") %>% 
+          flextable::flextable()
+        ft <- flextable::add_header_lines(ft, 
+                                          values = paste0("Categorical Variable: ",
+                                                          table_name), 
+                                          top = TRUE)
+        ft <- flextable::set_header_labels(ft,
+                                           rowname = table_name,
+                                           Stat_Test = "Test",
+                                           Stat_Name = "Statistic",
+                                           Test_Statistic = "Value",
+                                           P_Value = "p-val")
+        ft <- flextable::add_footer_lines(ft, "n (%)")
+        ft <- flextable::set_table_properties(ft, width = 0.8, layout = "autofit")
+        ft <- flextable::theme_vanilla(ft)
+        return(ft)
+      }
     }
     
     # Generate flextables
-    cts_flextables_list <- generate_cts_flextable(final_cts_table)
-    cat_flextables_list <- 
-      lapply(names(extracted_cats_tables), generate_cats_flextable, 
-             tables_list = extracted_cats_tables)
-    
-    flextables_list <- list()
-    flextables_list[[1]] <- cts_flextables_list
-    for(i in seq_along(cat_flextables_list)){
-      flextables_list[[i+1]] <- cat_flextables_list[[i]]
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0){
+      cts_flextables_list <- generate_cts_flextable(final_cts_table)
+    }
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+      cat_flextables_list <- 
+        lapply(names(extracted_cats_tables), generate_cats_flextable, 
+               tables_list = extracted_cats_tables)
     }
     
-    # knitr tables
-    print_cat_tables <- function(final_cts_table, extracted_cats_tables){
+    flextables_list <- list()
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0) {
+      flextables_list[[1]] <- cts_flextables_list
+    }
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0){ 
+      for(i in seq_along(cat_flextables_list)){
+        flextables_list[[i+1]] <- cat_flextables_list[[i]]
+      }
+    }
+    
+    print_cts_tables <- function(final_cts_table){
       kable_output1 <- knitr::kable(final_cts_table, format = "simple",
                                     caption = "Continuous Variables")
       print(kable_output1)
-      
+    }
+    
+    print_cat_tables <- function(extracted_cats_tables){
       catvar_names <- names(extracted_cats_tables)
       for(catvarname in catvar_names){
         catvar_df <- as.data.frame.matrix(extracted_cats_tables[[catvarname]])
         kable_output2 <- knitr::kable(catvar_df, format = "simple",
                                       caption = paste0("Categorical Variable: ", 
                                                        catvarname))
-      print(kable_output2)
+        print(kable_output2)
       }
     }
     
-    print_cat_tables(final_cts_table, extracted_cats_tables)
+    
+    # knitr tables
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0){
+      print_cts_tables(final_cts_table) 
+    }
+
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0){ 
+      print_cat_tables(extracted_cats_tables)
+    }
+    
     return(flextables_list)
   }
   

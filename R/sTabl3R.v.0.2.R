@@ -31,7 +31,7 @@ check_input <- function(df, group) {
   # Check if the first column is a unique ID
   if(any(duplicated(df[,1]))){
     message("Non-unique row IDs in column 1 of data frame object.")
-    message("WARNING: Deleting columns 1 and replacing with unique IDs.")
+    message("WARNING: Deleting column 1 and replacing with unique IDs.")
     df <- data.frame(ID = paste0("Sample",seq_along(df[[1]])), df[,-1])
   }
   # Check if the group argument is a column in the dataframe

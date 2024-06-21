@@ -13,3 +13,17 @@ devtools::install_github("CodeDepotIV/sTabl3R")
 
 Trivia: While the name ``sTabl3R`` was chosen to signify its role as a statistics table utility in R, it was also done with an intentional nod to Hall of Fame NFL quarterback Ken Stabler.
 
+# Quickstart:
+'''r
+library(sTabl3R)
+
+data(mtcars)
+# Generate a grouping variable
+mtcars$Group <- as.factor(rep("GroupA", nrow(mtcars))) # Single group case
+res1 <- generate_statistics(mtcars, group = "Group")
+generate_results_tables(res1)
+
+data(mtcars)
+res2 <- generate_statistics(mtcars, group = "cyl") # Multiple group levels
+generate_results_tables(res2)
+```

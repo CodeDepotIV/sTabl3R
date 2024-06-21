@@ -1,7 +1,7 @@
 Package: sTabl3R
 Title: Quick Summary Statistics in R
 Version: 0.0.0.2000
-Authors@R:
+Authors@R: 
     person("William", "Ackerman", , "weackerm@uic.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7366-3903"))
 Description: Quickly generate general statistics and summary tables for
@@ -18,10 +18,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Depends: R (>= 4.4.0)
-Imports:
-    flextable,
-    knitr,
-    tibble
-Suggests: 
-    testthat (>= 3.0.0)
+Imports: flextable, knitr, tibble
+Suggests: testthat (>= 3.0.0)
 Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2024-06-21 19:08:22 UTC; willi
+Author: William Ackerman [aut, cre] (<https://orcid.org/0000-0001-7366-3903>)
+Maintainer: William Ackerman <weackerm@uic.edu>

@@ -796,7 +796,7 @@ generate_results_tables <- function(results){
     message("Single group. Collecting descriptibe summary statistics.")
     function_ssTable(results)
   } else if (inherits(results, "sTable")) {
-    # Execute the function for 'sTable' and then stop
+    # Execute the function for 'sTable'
     message("Two or more groups. Collecting group comparison statistics.")
     function_sTable(results)
   } else {

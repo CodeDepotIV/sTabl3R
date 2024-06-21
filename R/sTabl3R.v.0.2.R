@@ -38,7 +38,7 @@ check_input <- function(df, group) {
   if (!group %in% names(df)) {
     stop(paste("The group argument", group, "is not a column in the dataframe."))
   }
-  # Coerce group to factor if it is no already a factor
+  # Coerce group to factor if it is not already a factor
   if (!is.factor(df[[group]])) {
     df[[group]] <- as.factor(df[[group]])
   }

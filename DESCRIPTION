@@ -1,0 +1,27 @@
+Package: sTabl3R
+Title: Quick Summary Statistics in R
+Version: 0.0.0.2000
+Authors@R:
+    person("William", "Ackerman", , "weackerm@uic.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7366-3903"))
+Description: Quickly generate general statistics and summary tables for
+    demographic/phenotypic/clinical variables using a formatted data frame
+    and a specified grouping variable. This project was motivated by a
+    perceived need to accelerate data table production using some reasonable
+    (albeit general) assumptions about the provided data. In its current form, it
+    consists of a set of two major R functions to (1) perform statistical
+    analysis on a given data frame using a pre-specified grouping variable;
+    and (2) generate tables using a combination of `knitr` and
+    `flextable`. Developed using R version 4.4.0.
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Depends: R (>= 4.4.0)
+Imports:
+    flextable,
+    knitr,
+    tibble
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

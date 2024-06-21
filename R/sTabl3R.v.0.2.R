@@ -656,7 +656,7 @@ generate_results_tables <- function(results){
                                            Test_Statistic = "Value",
                                            P_Value = "p-val")
         cft <- flextable::add_footer_lines(cft, "n (%)")
-        cft <- flextable::set_table_properties(ft, width = 0.8, layout = "autofit")
+        cft <- flextable::set_table_properties(cft, width = 0.8, layout = "autofit")
         cft <- flextable::theme_vanilla(cft)
         print(cft)
       }

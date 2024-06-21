@@ -3,3 +3,6 @@
 export(check_input)
 export(generate_results_tables)
 export(generate_statistics)
+import(flextable)
+importFrom(knitr,kable)
+importFrom(tibble,rownames_to_column)

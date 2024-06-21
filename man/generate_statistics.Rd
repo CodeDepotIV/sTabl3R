@@ -23,11 +23,16 @@ either be examined directly or used as input for the \code{\link[=generate_resul
 function.
 
 Structure of the \code{sTable} class:
+List of 3
+$ Counts      :   data.frame of counts (samples per group)
+$ Continuous  :   if present, summary tables and statistics for each variable
+$ Categorical :   if present, contingency tables and statistics for each variable
 
 Structure of the \code{ssTable} class:
-list( Counts = counts,
-Continuous = list_of_num_tables,
-Categorical = list_of_cat_tables)
+List of 3
+$ Counts      :   data.frame of counts (number of samples)
+$ Continuous  :   if present, summary table of continuous variables
+$ Categorical :   if present, single group contingency tables for each variable
 }
 \description{
 This function will perform a quick statistical analysis on a supplied
@@ -42,8 +47,8 @@ data frame.
 
 For each identified numeric variable, Shapiro-Wilk testing is employed to
 check for normality. Then, each numeric variable is subjected either to
-parametric (t-test or one-way ANOVA) or non-parametric (Mann-
-Whitney U test or Kruskal-Wallis test) comparisons depending on the number of
+parametric (t-test or one-way ANOVA) or non-parametric (Mann-Whitney U test
+or Kruskal-Wallis test) comparisons depending on the number of
 strata in the grouping variable. For instances where the grouping variable
 has a single level, only summary statistics will be generated.
 

@@ -8,8 +8,8 @@ generate_results_tables(results)
 }
 \arguments{
 \item{results}{A list from \code{\link[=generate_statistics]{generate_statistics()}} that contains the
-results of the statistical tests. It should be an object of class 'sTable'
-for multiple group comparisons or 'ssTable' for single group comparisons.}
+results of the statistical tests. It should be an S3 object of class \code{sTable}
+for multiple group comparisons or \code{ssTable} for single group comparisons.}
 }
 \value{
 A list of flextables for each variable in the results. If the input

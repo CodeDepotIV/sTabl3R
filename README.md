@@ -18,6 +18,7 @@ Trivia: While the name ``sTabl3R`` was chosen to signify its role as a statistic
 library(sTabl3R)
 
 data(mtcars)
+
 # Generate a grouping variable
 mtcars$Group <- as.factor(rep("GroupA", nrow(mtcars))) # Single group case
 res1 <- generate_statistics(mtcars, group = "Group")

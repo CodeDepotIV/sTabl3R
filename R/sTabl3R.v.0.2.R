@@ -511,6 +511,9 @@ generate_statistics <- function(df, group = "Group"){
 #' @examples
 #' results <- generate_statistics(data, group = "My_Grouping_Variable")
 #' tables <- generate_results_tables(results)
+#' @import flextable
+#' @importFrom tibble rownames_to_column
+#' @importFrom knitr kable
 #' @export
 generate_results_tables <- function(results){
 

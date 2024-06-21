@@ -78,7 +78,7 @@ dTable <- function(obj) {
 #' summary tables will be generated.
 #'
 #' `FORMATTING`
-#' The data frame should be an R data [data.frame()] object in which the first
+#' The data frame should be an R [data.frame()] object in which the first
 #' column is a list of unique identifiers. The `group` argument should identify
 #' a column in the data frame that will be used to distinguish the groups that
 #' are to be compared statistically. A single group can be generated as shown in

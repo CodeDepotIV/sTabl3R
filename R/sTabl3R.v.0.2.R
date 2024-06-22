@@ -175,6 +175,10 @@ generate_statistics <- function(df, group = "Group"){
     }
 
     # Perform Shapiro-Wilk test
+      # TODO: Consider using a different test
+      # TODO: Sometimes you want just non-parametric, so an improved package would 
+      # allow the use to override this. Coder needs to develop comfort with 
+      # using additional function arguments.
     shapiro_test <- shapiro.test(num)
 
     # Determine if the data is parametric or non-parametric

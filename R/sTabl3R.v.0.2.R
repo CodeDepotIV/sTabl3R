@@ -128,7 +128,7 @@ generate_statistics <- function(df, group = "Group"){
   # Error checking
   df <- check_input(df, group)
 
-  check_numeric_var <- function(num_var){
+  check_numeric_var <- function(num_var) {
     num_var <- num_var[!is.na(num_var)]
     # Check if the numeric variable has more than one unique value
     if (length(unique(num_var)) <= 1) {
@@ -139,7 +139,7 @@ generate_statistics <- function(df, group = "Group"){
     return(TRUE)
   }
 
-  find_variable_types <- function(df){
+  find_variable_types <- function(df) {
     sapply(df, function(x) {
       if (any(class(x) %in% c("integer", "numeric"))) {
         return("numeric")
@@ -149,17 +149,17 @@ generate_statistics <- function(df, group = "Group"){
     })
   }
 
-  find.numeric <- function(df){
+  find.numeric <- function(df) {
     types <- find_variable_types(df)
     return(types[types == "numeric"] |> names())
   }
 
-  find.categorical <- function(df){
+  find.categorical <- function(df) {
     types <- find_variable_types(df)
     return(types[types != "numeric"] |> names())
   }
 
-  run_num_stats <- function(df, group_var, num_var){
+  run_num_stats <- function(df, group_var, num_var) {
     # Check if the variables exist in the dataframe
     if (!(group_var %in% names(df)) || !(num_var %in% names(df))) {
       stop("Variables not found in the dataframe")
@@ -273,7 +273,7 @@ generate_statistics <- function(df, group = "Group"){
                 p_value = p_value))
   }
 
-  make_prop_table <- function(x){
+  make_prop_table <- function(x) {
     # Function to format the categorical variable tables
     freq <- table(x, useNA="ifany")
     m <- matrix(freq, nrow=dim(freq)[1])
@@ -291,7 +291,7 @@ generate_statistics <- function(df, group = "Group"){
     return(comb)
   }
 
-  generate_one_group_summary_stats <- function(df){
+  generate_one_group_summary_stats <- function(df) {
     df[[group]] <- droplevels(df[[group]])
 
     # Continuous variables one group summary
@@ -304,7 +304,7 @@ generate_statistics <- function(df, group = "Group"){
       stringsAsFactors = FALSE
     )
 
-    for(nvar in num_vars){
+    for(nvar in num_vars) {
       if(shapiro.test(df[[nvar]])$p.value < 0.05){
         median <- summary(df[[nvar]])[3]
         qrt1 <- summary(df[[nvar]])[2]
@@ -330,7 +330,7 @@ generate_statistics <- function(df, group = "Group"){
     catvars_sel <- catvars_sel[catvars_sel != group] # Omit grouping variable
 
     cat_tables <- list()
-    for(cvar in catvars_sel){
+    for(cvar in catvars_sel) {
       freq <- table(df[[cvar]], df[[group]], useNA="ifany")
       m <- matrix(freq, nrow=dim(freq)[1])
       prop <- sweep(m, 2, colSums(m), FUN="/") * 100
@@ -400,7 +400,7 @@ generate_statistics <- function(df, group = "Group"){
     # Get the stats for the categorical variables
     cat_vars <- find.categorical(df)[-1] # Assumes ID is first row
     cat_vars <- cat_vars[-which(cat_vars == group)] # Drops Grouping Variable
-    for(cvar in cat_vars){
+    for(cvar in cat_vars) {
       contingency_table <- table(df[[group]], df[[cvar]])
       res_stats <- choose_cont_tab_test(contingency_table)
       results_df <- rbind(results_df, data.frame(
@@ -414,7 +414,7 @@ generate_statistics <- function(df, group = "Group"){
 
     # Tables for categorical variables
     list_of_cat_tables <- list()
-    for(cvar in cat_vars){
+    for(cvar in cat_vars) {
       tab <- df[,c(cvar, group)]
       prop_tab <- make_prop_table(tab)
       list_of_cat_tables[[cvar]]$Table <- prop_tab
@@ -436,6 +436,7 @@ generate_statistics <- function(df, group = "Group"){
 
       aggr_res <- # Aggregate the results
         aggregate(tab[[nvar]] ~ tab[[group]], data = , FUN = function(x) {
+          # I was trying a different method here rather than using summary() just out of curiosity
           c(n = length(x),
             mean = mean(x, na.rm = T),
             sd = sd(x, na.rm = T),
@@ -445,7 +446,7 @@ generate_statistics <- function(df, group = "Group"){
             pct_25 = quantile(x, probs = c(0.25), na.rm = T),
             pct_75 = quantile(x, probs = c(0.75), na.rm = T),
             IQR = IQR(x, na.rm = T)
-            )
+            ) 
         })
       colnames(aggr_res) <- c("Group", "Num_Var")
 
@@ -459,7 +460,7 @@ generate_statistics <- function(df, group = "Group"){
         names(entries) <- aggr_res$Group
         entries <- as.data.frame(t(entries))
       } else if(results_df[results_df$Variable == nvar,]$Stat_Test %in%
-        c("Kruskal-Wallis", "Wilcoxon Rank Sum")){ # Non-parametric
+        c("Kruskal-Wallis", "Wilcoxon Rank Sum")) { # Non-parametric
         # Median [IQR]
         aggr_res$Num_Var |> as.data.frame() -> dframe
         median <- round(dframe$median, 2)
@@ -515,7 +516,7 @@ generate_statistics <- function(df, group = "Group"){
 #' @importFrom tibble rownames_to_column
 #' @importFrom knitr kable
 #' @export
-generate_results_tables <- function(results){
+generate_results_tables <- function(results) {
 
   stopifnot(inherits(results, "sTable") || inherits(results, "ssTable"))
 
@@ -529,7 +530,7 @@ generate_results_tables <- function(results){
     return(df)
   }
 
-  function_sTable <- function(results){
+  function_sTable <- function(results) {
 
     # Continuous results ----
     continuous_results <- results$Continuous
@@ -545,6 +546,7 @@ generate_results_tables <- function(results){
         extracted_cts_stats[[names(continuous_results)[i]]] <-
           continuous_results[[i]][2:5]
       }
+      
       # Combine and put into a dataframe
       combined_cts_table <- do.call(rbind, extracted_cts_tables) |> as.data.frame()
       combined_cts_stats <- do.call(cbind, extracted_cts_stats) |> t() |> as.data.frame()
@@ -579,10 +581,12 @@ generate_results_tables <- function(results){
     }
 
     # Categorical results ----
-    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0) {
+      
       categorical_results <- results$Categorical
       # Empty list for extracted tables
       extracted_cats_tables <- extracted_cats_stats <- list()
+      
       for (i in seq_along(categorical_results)) {
         extracted_cats_tables[[names(categorical_results)[i]]] <-
           categorical_results[[i]]$Table
@@ -596,6 +600,7 @@ generate_results_tables <- function(results){
       combined_cats_stats$Stat_Name <- unlist(combined_cats_stats$Stat_Name)
       combined_cats_stats$Test_Statistic <- unlist(combined_cats_stats$Test_Statistic)
       combined_cats_stats$P_Value <- unlist(combined_cats_stats$P_Value )
+      
       numeric_test_stat <-
         suppressWarnings(as.numeric(combined_cats_stats$Test_Statistic))
       combined_cats_stats$Test_Statistic <- ifelse(
@@ -603,6 +608,7 @@ generate_results_tables <- function(results){
         round(as.numeric(numeric_test_stat), 2),
         "none"
       )
+      
       combined_cats_stats$P_Value <-
         signif(as.numeric(combined_cats_stats$P_Value), digits = 2)
 
@@ -614,6 +620,7 @@ generate_results_tables <- function(results){
         Stat_Name <- c(stats$Stat_Name, fillers)
         Test_Statistic <- c(stats$Test_Statistic, fillers)
         P_Value <- c(stats$P_Value, fillers)
+      
         # Add the custom margins to the table
         new_table <-
           suppressWarnings(suppressMessages(
@@ -663,32 +670,36 @@ generate_results_tables <- function(results){
     }
 
     # Generate flextables
-    if (!is.null(results$Continuous) && length(results$Continuous) > 0){
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0) {
       cts_flextables_list <- generate_cts_flextable(final_cts_table)
     }
-    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+                           
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0) {
       cat_flextables_list <-
         lapply(names(extracted_cats_tables), generate_cats_flextable,
                tables_list = extracted_cats_tables)
     }
 
+    # Collect fextables to final list                       
     flextables_list <- list()
     if (!is.null(results$Continuous) && length(results$Continuous) > 0) {
       flextables_list[[1]] <- cts_flextables_list
     }
-    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+
+    # Ugh... should it start at index 2 if index 1 is empty?
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0) {
       for(i in seq_along(cat_flextables_list)){
         flextables_list[[i+1]] <- cat_flextables_list[[i]]
-      }
+      } 
     }
 
-    print_cts_tables <- function(final_cts_table){
+    print_cts_tables <- function(final_cts_table) {
       kable_output1 <- knitr::kable(final_cts_table, format = "simple",
                                     caption = "Continuous Variables")
       print(kable_output1)
     }
 
-    print_cat_tables <- function(extracted_cats_tables){
+    print_cat_tables <- function(extracted_cats_tables) {
       catvar_names <- names(extracted_cats_tables)
       for(catvarname in catvar_names){
         catvar_df <- as.data.frame.matrix(extracted_cats_tables[[catvarname]])
@@ -701,26 +712,25 @@ generate_results_tables <- function(results){
 
 
     # knitr tables
-    if (!is.null(results$Continuous) && length(results$Continuous) > 0){
+    if (!is.null(results$Continuous) && length(results$Continuous) > 0) {
       print_cts_tables(final_cts_table)
     }
 
-    if(!is.null(results$Categorical) && length(results$Categorical) > 0){
+    if(!is.null(results$Categorical) && length(results$Categorical) > 0) {
       print_cat_tables(extracted_cats_tables)
     }
 
     return(flextables_list)
   }
 
-  function_ssTable <- function(results){
+  function_ssTable <- function(results) {
 
     # Extract results
     continuous_df <- results$Continuous
-
     categorical_tables <- results$Categorical
 
     # flextable functions
-    generate_ss_cts_flextable <- function(continuous_df){
+    generate_ss_cts_flextable <- function(continuous_df) {
       row1 <- list()
       row1$Variable <- names(results$Counts)
       row1$Summary <- paste0(
@@ -780,7 +790,7 @@ generate_results_tables <- function(results){
     print(kable_output1)
 
     catvar_names <- names(categorical_tables)
-    for(catvarname in catvar_names){
+    for(catvarname in catvar_names) {
       catvar_df <- as.data.frame.matrix(categorical_tables[[catvarname]])
       kable_output2 <- knitr::kable(catvar_df, format = "simple",
                                     caption = paste0("Categorical Variable: ",

@@ -13,7 +13,7 @@ devtools::install_github("CodeDepotIV/sTabl3R")
 
 Trivia: While the name ``sTabl3R`` was chosen to signify its role as a statistics table utility in R, it was also done with an intentional nod to Hall of Fame NFL quarterback Ken Stabler.
 
-# Quickstart:
+# Quick start:
 ``` r
 library(sTabl3R)
 

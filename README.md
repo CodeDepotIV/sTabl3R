@@ -22,9 +22,11 @@ data(mtcars)
 # Generate a grouping variable
 mtcars$Group <- as.factor(rep("GroupA", nrow(mtcars))) # Single group case
 res1 <- generate_statistics(mtcars, group = "Group")
+summary(res1)
 generate_results_tables(res1)
 
 data(mtcars)
 res2 <- generate_statistics(mtcars, group = "cyl") # Multiple group levels
+summary(res2)
 generate_results_tables(res2)
 ```

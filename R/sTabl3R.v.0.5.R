@@ -957,11 +957,11 @@ generate_results_tables <- function(results) {
 #' Summarize an `sTable` object
 #'
 #' This function provides a summary of an `sTable` object, including the groups,
-#' the variables that were deemed to be continuous (of present), and the variables 
+#' the variables that were categorized as continuous (if present), and the variables 
 #' that were deemed to be categorical (if present) when the [generate_statistics()] 
 #' function was called.
 #'
-#' @param x An sTable object
+#' @param x An `sTable` object
 #' @param ... Additional arguments
 #' @return No return value; this function is called for printing to the console
 #' @export
@@ -990,11 +990,11 @@ summary.sTable <- function(x, ...){
 #' Summarize an `ssTable` object
 #'
 #' This function provides a summary of an `ssTable` object, including the group,
-#' the variables that were deemed to be continuous (of present), and the variables 
+#' the variables that were considered as continuous (if present), and the variables 
 #' that were deemed to be categorical (if present) when the [generate_statistics()] 
 #' function was called.
 #'
-#' @param x An sTable object
+#' @param x An 'ssTable' object
 #' @param ... Additional arguments
 #' @return No return value; this function is called for printing to the console
 #' @export
@@ -1020,7 +1020,7 @@ summary.ssTable <- function(x, ...){
   }
 }
 
-#' @title Extract and Display Statistics from a Dataframe
+#' @title Extract and Display Statistics from a `sTabl3R` Formatted Dataframe
 #'
 #' @description This function tries to extract statistics from a dataframe using
 #' `sTabl3R` functions based on a specified grouping variable and a second variable
@@ -1131,7 +1131,7 @@ extract_stats <- function(df, group = "Group", var) {
 # Helper functions ----
 
 # Recursive function to search a multilevel S3 obj to see if target is in names
-# returns path info as well, or NULL if not found
+# returns path info as well, or NULL if nothing found
 search_list <- function(lst, target, path = character()) {
   if(target %in% names(lst)) {
     return(c(path, target))

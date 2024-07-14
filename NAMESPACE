@@ -3,6 +3,7 @@
 S3method(summary,sTable)
 S3method(summary,ssTable)
 export(check_input)
+export(extract_stats)
 export(generate_results_tables)
 export(generate_statistics)
 import(flextable)

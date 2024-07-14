@@ -30,3 +30,15 @@ res2 <- generate_statistics(mtcars, group = "cyl") # Multiple group levels
 summary(res2)
 generate_results_tables(res2)
 ```
+
+# Here's the deal:
+
+The package is built around a central ``generate_statistics()`` function. This function function attempts to identify numeric (continuous and ordinal) and categorical variables within a user-supplied data frame.
+
+For each identified numeric variable, Shapiro-Wilk testing is employed to check for normality. Then, each numeric variable is subjected either to parametric (t-test or one-way ANOVA) or non-parametric (Mann-Whitney U test or Kruskal-Wallis test) comparisons depending on the number of strata in the grouping variable. For instances where the grouping variable has a single level, only summary statistics will be generated.
+
+For categorical variables, the function will apply either the Chi-squared test or the Fisher’s Exact test based on the expected frequencies in each contingency table, unless the grouping variable has a single level, in which case only summary tables will be generated.
+
+**FORMATTING:** The data frame should be an R ``data.frame()`` object in which the first column is a list of unique identifiers. The group argument should identify a column in the data frame that will be used to distinguish the groups that are to be compared statistically. Please note that if unique identifiers are not present in the first columns, the first column *will be overwritten*. This can be a problem if your first column is a variable of interest, such as the grouping variable.
+
+The other functions include ``extract_stats()`` which allows the user to extract the statistical results for a variable of interest quickly, ``generate_results_tables()`` which generates a series of tables displaying all of the results generated following a call to ``generate_statistics()``, and ``summary`` functions to show which variables in the user input were used in the analysis and how they were categorized.

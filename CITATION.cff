@@ -4,7 +4,7 @@ authors:
   - family-names: Ackerman
     given-names: William
     orcid: https://orcid.org/0000-0001-7366-3903
-title: "sTabl3R: Quick Summary Statistics in R"
+title: "sTabl3R: Quick Statistical Testing and Summary Tables in R"
 version: 0.5.0
 identifiers:
   - type: doi

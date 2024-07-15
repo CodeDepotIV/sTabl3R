@@ -125,8 +125,9 @@ check_input <- function(df, group) {
 #' 
 generate_statistics <- function(df, group = "Group"){
 
-  # Functions
-  # Error checking
+  # Functions # # # # # # # # # # # # # # # # # # # #
+  
+  ## Error checking
   df <- check_input(df, group)
 
   check_numeric_var <- function(num_var) {

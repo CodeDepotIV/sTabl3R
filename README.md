@@ -1,5 +1,5 @@
-# sTabl3R: Quick Summary of Statistical Tests in R
-Quickly generate general statistics and summary tables for demographic/phenotypic/clinical variables using a formatted data frame and a specified grouping variable. This project was motivated by a perceived need to accelerate data table production using some reasonable (albeit general) assumptions about the provided data.    
+# sTabl3R: Quick Statistical Testing and Summary Tables in R
+Quickly generate general statistical hypothesis tests and summary tables for demographic/phenotypic/clinical variables using a formatted data frame and a specified grouping variable. This project was motivated by a perceived need to accelerate data table production using some reasonable (albeit general) assumptions about the provided data.    
 
 In its current form, the package consists of a set of two major R functions to: (1) perform statistical analysis on a given data frame using a pre-specified grouping variable; and (2) generate tables using a combination of ``knitr::kable`` and ``flextable``. See package documentation for additional details.
 

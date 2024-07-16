@@ -31,8 +31,8 @@ check_input <- function(df, group) {
   # Check if the first column is a unique ID
   if(any(duplicated(df[,1]))){
     message("Non-unique row IDs in column 1 of data frame object.")
-    message("WARNING: Deleting column 1 and replacing with unique IDs.")
-    df <- data.frame(ID = paste0("Sample",seq_along(df[[1]])), df[,-1])
+    message("Adding a new column with unique IDs.")
+    df <- data.frame(ID = paste0("Observation",seq_along(df[[1]])), df)
   }
   # Check if the group argument is a column in the dataframe
   if (!group %in% names(df)) {
@@ -1005,7 +1005,7 @@ summary.ssTable <- function(x, ...){
   cat(paste(group, collapse = ", "), "\n")
   
   cont_vars <- x$Continuous$Variable
-  if (length(res2$Continuous$Variable) != 0) {
+  if (length(cont_vars) != 0) {
     cat("Continuous Variables:\n")
     for (var in cont_vars) {
       cat("  ", var, "\n")  
@@ -1054,10 +1054,10 @@ extract_stats <- function(df, group = "Group", var) {
     stop("Error. The input df is not a dataframe.")
   }
   if (!(group %in% colnames(df))) {
-    stop(paste("Error. The group:", group, "is not in the dataframe: ", df))
+    stop(paste("Error. The group:", group, "is not in the dataframe."))
   }
   if (!(group %in% colnames(df))) {
-    stop(paste("Error. The group:", group, "is not in the dataframe: ", df))
+    stop(paste("Error. The group:", group, "is not in the dataframe."))
   }
   
   res <- generate_statistics(df, group)

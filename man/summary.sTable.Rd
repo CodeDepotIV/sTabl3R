@@ -7,7 +7,7 @@
 \method{summary}{sTable}(x, ...)
 }
 \arguments{
-\item{x}{An sTable object}
+\item{x}{An \code{sTable} object}
 
 \item{...}{Additional arguments}
 }
@@ -16,7 +16,7 @@ No return value; this function is called for printing to the console
 }
 \description{
 This function provides a summary of an \code{sTable} object, including the groups,
-the variables that were deemed to be continuous (of present), and the variables
+the variables that were categorized as continuous (if present), and the variables
 that were deemed to be categorical (if present) when the \code{\link[=generate_statistics]{generate_statistics()}}
 function was called.
 }

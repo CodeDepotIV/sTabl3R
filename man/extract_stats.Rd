@@ -2,7 +2,7 @@
 % Please edit documentation in R/sTabl3R.v.0.5.R
 \name{extract_stats}
 \alias{extract_stats}
-\title{Extract and Display Statistics from a Dataframe}
+\title{Extract and Display Statistics from a \code{sTabl3R} Formatted Dataframe}
 \usage{
 extract_stats(df, group = "Group", var)
 }

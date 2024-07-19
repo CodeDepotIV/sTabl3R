@@ -4,13 +4,15 @@
 \alias{generate_statistics}
 \title{Generate statistical summary of a data frame.}
 \usage{
-generate_statistics(df, group = "Group")
+generate_statistics(df, group = "Group", force_nonparametric = F)
 }
 \arguments{
 \item{df}{A \code{\link[=data.frame]{data.frame()}} object.}
 
 \item{group}{A character string specifying the grouping variable. Must be a column in the dataframe.
 Defaults to group = "Group".}
+
+\item{force_nonparametric}{Logical. If TRUE, the function will use non-parametric statistical testing. Default is FALSE.}
 }
 \value{
 The function returns a list containing counts, continuous variable tables

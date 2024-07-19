@@ -84,6 +84,7 @@ check_input <- function(df, group) {
 #' @param df A [data.frame()] object.
 #' @param group A character string specifying the grouping variable. Must be a column in the dataframe. 
 #' Defaults to group = "Group".
+#' @param force_nonparametric Logical. If TRUE, the function will use non-parametric statistical testing. Default is FALSE.
 #' @return
 #' The function returns a list containing counts, continuous variable tables
 #' with associated statistical results, and, for categorical variables,
@@ -123,7 +124,7 @@ check_input <- function(df, group) {
 #' generate_results_tables(res2)
 #' @export
 #' 
-generate_statistics <- function(df, group = "Group"){
+generate_statistics <- function(df, group = "Group", force_nonparametric = F){
 
   # Functions # # # # # # # # # # # # # # # # # # # #
   
@@ -184,7 +185,13 @@ generate_statistics <- function(df, group = "Group"){
     shapiro_test <- shapiro.test(num)
 
     # Determine if the data is parametric or non-parametric
-    is_parametric <- shapiro_test$p.value > 0.05
+    if (force_nonparametric) {
+      # case when the user wants to only use non-parametric tests
+      is_parametric <- FALSE
+    } else {
+      # case when the decision is left to the SW test results
+      is_parametric <- shapiro_test$p.value > 0.05
+    }
 
     # Initialize an empty list to store test results
     test_results <- list()

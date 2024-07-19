@@ -652,6 +652,69 @@ generate_results_tables <- function(results) {
       }
       
       # Combine and put into a dataframe
+      
+      # First check to see if the same number of rows are present
+      num_cols <- lapply(extracted_cts_tables, function(df) ncol(df))
+      
+      mode_num_cols <- as.integer(names(which.max(table(unlist(num_cols)))))
+      
+      if ( any(unlist(num_cols) != mode_num_cols) ){
+        # If any column numbers don't match
+        
+        # Find data frames with fewer columns than the mode
+        fewer_cols <- names(which(unlist(num_cols) < mode_num_cols))
+        if (length(fewer_cols) > 0) {
+          message(paste("Data frames with fewer columns than group levels: ", 
+                        paste(fewer_cols, collapse = ", ")))
+          
+          # Handle data frames with fewer columns
+          if (length(fewer_cols) == 1) {
+            
+            different <- setdiff(names(results$Counts),
+                     names(extracted_cts_tables[[fewer_cols]]) )
+
+            for (col in different) {
+              extracted_cts_tables[[fewer_cols]][, col] <- NA
+            }
+
+            # Now reorder
+            order_vector <- names(results$Counts)
+            extracted_cts_tables[[fewer_cols]] <- 
+              extracted_cts_tables[[fewer_cols]][, match(order_vector, 
+                                                         names(extracted_cts_tables[[fewer_cols]]))]
+            
+          } else if (length(fewer_cols) > 1) {
+            
+            for (cols in fewer_cols) {
+              different <- setdiff(names(results$Counts),
+                                   names(extracted_cts_tables[[cols]]) )
+              
+              for (col in different) {
+                extracted_cts_tables[[cols]][, col] <- NA
+              }
+  
+              # Now reorder
+              order_vector <- names(results$Counts)
+              extracted_cts_tables[[cols]] <- 
+                extracted_cts_tables[[cols]][, match(order_vector, 
+                                                           names(extracted_cts_tables[[cols]]))]
+              
+            }
+          }
+          
+        }
+        
+        more_cols <- names(which(unlist(num_cols) > mode_num_cols))
+        if (length(more_cols) > 0) {
+          message(paste("Data frames with more columns than group levels: ", 
+                      paste(more_cols, collapse = ", ")))
+          stop("The number of columns exceeds the levels of the grouping variable. 
+               Please check the input.")
+
+        }
+       
+      }
+
       combined_cts_table <- do.call(rbind, extracted_cts_tables) |> as.data.frame()
       combined_cts_stats <- do.call(cbind, extracted_cts_stats) |> t() |> 
         as.data.frame()

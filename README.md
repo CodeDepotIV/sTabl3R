@@ -40,7 +40,7 @@ generate_results_tables(res2)
 
 The package is built around a central ``generate_statistics()`` function. This function function attempts to identify numeric (continuous and ordinal) and categorical variables within a user-supplied data frame.
 
-For each identified numeric variable, Shapiro-Wilk testing is employed to check for normality. Then, each numeric variable is subjected either to parametric (t-test or one-way ANOVA) or non-parametric (Mann-Whitney U test or Kruskal-Wallis test) comparisons depending on the number of strata in the grouping variable. For instances where the grouping variable has a single level, only summary statistics will be generated.
+For each identified numeric variable, Shapiro-Wilk testing is employed to check for normality. Provided that the user does not specify ``force_nonparametric = TRUE`` in the argument, each numeric variable will be subjected either to parametric (t-test or one-way ANOVA) or non-parametric (Mann-Whitney U test or Kruskal-Wallis test) comparisons depending on the number of strata in the grouping variable. For instances where the grouping variable has a single level, only summary statistics will be generated.
 
 For categorical variables, the function will apply either the Chi-squared test or the Fisher’s Exact test based on the expected frequencies in each contingency table, unless the grouping variable has a single level, in which case only summary tables will be generated.
 

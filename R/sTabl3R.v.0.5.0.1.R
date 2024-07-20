@@ -1226,3 +1226,32 @@ search_list <- function(lst, target, path = character()) {
   
   return(NULL)
 }
+
+# Secret function that has nothing to do with the package in its current form
+# Just makes the steps of doing this a bit easier                           
+logistic_summary <- function(model) {
+  # Check if the model is a binomial logistic regression model
+  if (class(model)[1] != "glm" | model$family$family != "binomial" | 
+      model$family$link != "logit") {
+    stop("The model must be a binomial logistic regression model.")
+  }
+  
+  # Get the coefficients and confidence intervals
+  coef <- summary(model)$coefficients
+  ci <- confint(model)
+  
+  # Convert the estimates and confidence intervals to the original scale
+  result <- data.frame(
+    log.estimate = coef[, "Estimate"],
+    log.std.error = coef[, "Std. Error"],
+    log.conf.low = ci[, "2.5 %"],
+    log.conf.high = ci[, "97.5 %"],
+    estimate = exp(coef[, "Estimate"]),
+    conf.low = exp(ci[, "2.5 %"]),
+    conf.high = exp(ci[, "97.5 %"]), 
+    z.value = coef[, "z value"], 
+    p.value = coef[, "Pr(>|z|)"]
+  )
+  
+  return(result)
+}

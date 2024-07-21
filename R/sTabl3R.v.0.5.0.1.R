@@ -1245,13 +1245,13 @@ logistic_summary <- function(model) {
   # see: https://stats.stackexchange.com/questions/5304/why-is-there-a-difference-between-manually-calculating-a-logistic-regression-95/5320#5320
   # Convert the estimates and confidence intervals to the original scale
   result <- data.frame(
-    log.estimate = coef[, "Estimate"],
+    log.odds = coef[, "Estimate"],
     log.std.error = coef[, "Std. Error"],
     log.conf.low.profile = ci[, "2.5 %"],
     log.conf.high.profile = ci[, "97.5 %"],
     log.conf.low.wald = wald.ci[, "2.5 %"], 
     log.conf.high.wald = wald.ci[, "97.5 %"],
-    estimate = exp(coef[, "Estimate"]),
+    odds.ratio = exp(coef[, "Estimate"]),
     conf.low.profile = exp(ci[, "2.5 %"]),
     conf.high.profile = exp(ci[, "97.5 %"]),
     conf.low.wald = exp(wald.ci[, "2.5 %"]),

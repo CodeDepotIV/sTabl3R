@@ -1,6 +1,6 @@
 Package: sTabl3R
 Title: Quick Summary Statistics in R
-Version: 0.5.0.1
+Version: 0.6.0.0
 Authors@R: 
     person("William", "Ackerman", , "weackerm@uic.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7366-3903"))

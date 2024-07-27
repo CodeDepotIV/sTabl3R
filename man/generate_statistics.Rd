@@ -68,6 +68,7 @@ column is a list of unique identifiers. The \code{group} argument should identif
 a column in the data frame that will be used to distinguish the groups that
 are to be compared statistically. A single group can be generated as shown in
 the examples below for the \code{mtcars} dataset.
+
 }
 \examples{
 data(mtcars)

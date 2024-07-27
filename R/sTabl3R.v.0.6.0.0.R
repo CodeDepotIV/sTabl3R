@@ -892,7 +892,7 @@ generate_results_tables <-
             
             cat_var_table_rows <- lst[[name]]$Table |> nrow()
             
-            if(cat_var_table_rows > threshold) {
+            if(cat_var_table_rows > nrow_threshold) {
               recode_list <- c(recode_list, name)
             }
             

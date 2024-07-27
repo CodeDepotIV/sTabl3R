@@ -46,4 +46,7 @@ For categorical variables, the function will apply either the Chi-squared test o
 
 **FORMATTING:** The data frame should be an R ``data.frame()`` object in which the first column is a list of unique identifiers. The **group** argument should identify a column in the data frame that will be used to distinguish the groups that are to be compared statistically. *Please note* that if unique identifiers are not present in the first column, unique identifiers will be appended to the dataframe.
 
-The other functions include ``extract_stats()`` which allows the user to extract the statistical results for a variable of interest quickly, ``generate_results_tables()`` which generates a series of tables displaying all of the results generated following a call to ``generate_statistics()``, and ``summary()`` functions to show which variables in the user input were used in the analysis and how they were categorized.
+The other functions include ``extract_stats()`` which allows the user to extract the statistical results for a variable of interest quickly, ``generate_results_tables()`` which generates a series of tables displaying all of the results generated following a call to ``generate_statistics()``, and ``summary()`` functions to show which variables in the user input were used in the analysis and how they were categorized. 
+
+# New features as they arrive:
+**v0.6.0.0** Added ``flag_high_cardinality()`` function to scan a dataset for categorical variables that may require recoding. 

@@ -1348,6 +1348,66 @@ extract_stats <- function(df, group = "Group", var) {
 
 # Helper functions ----
 
+#' Flag High Cardinality Function
+#'
+#' This function identifies and returns the names of the columns in a data frame 
+#' that have a high cardinality (i.e., the number of unique values in the column 
+#' exceeds a specified threshold). This is function is intended to scan a 
+#' matrix-like object (arranged with variables in columns and observations in 
+#' rows) for categorical variables that may require further attention and cleaning.  
+#'
+#' @param df A [data.frame()] object that is to be checked for high cardinality columns.
+#' @param threshold A positive integer that sets the limit for what is considered high 
+#' cardinality. If no threshold is provided, it defaults to 5% of the number of 
+#' observations in the data frame.
+#' 
+#' @return A character vector containing the names of the high cardinality columns.
+#' @examples
+#' df <- data.frame(A = seq(1,26), B = letters[1:26], C = c(rep("foo", 25), "bar"))
+#' flag_high_cardinality(df)
+#' @export
+flag_high_cardinality <- function(df, threshold=NULL, 
+                                  .group_null = "Not_a_group") 
+{
+  
+  # If no threshold is provided, set it to 5% of the number of observations
+  if (is.null(threshold)) {
+    threshold <- ceiling(nrow(df) * 0.05) |> as.integer()
+  }
+  
+  # Check if the threshold is a reasonable integer
+  if (!is.integer(threshold) | threshold < 1) {
+    stop("Threshold must be a positive integer.")
+  }
+  
+  if (!.group_null %in% names(df)) {
+    # This is just for the format checking depending on the input
+    # Function may be used as a standalone function or as an internal 
+    # call from another function, and a grouping variable is not expected.
+    # As written, if the grouping variable is provided, it will also be
+    # checked for high cardinality.
+    df[[.group_null]] <- "Null_Group"
+  }
+  
+  df <- sTabl3R::check_input(df, group = .group_null)
+  
+  df <- df |> select(-1) # First column is unique ID, disregard
+  
+  high_cardinality_cols <- character(0)
+  
+  for (col in names(df)) {
+    if (!is.numeric(df[[col]])) {  # if the column is non-numeric
+      unique_values <- length(unique(df[[col]]))
+      if (unique_values > threshold) {
+        high_cardinality_cols <- c(high_cardinality_cols, col)
+      }
+    }
+  }
+  
+  return(high_cardinality_cols)
+  
+}
+
 # Recursive function to search a multilevel S3 obj to see if target is in names
 # returns path info as well, or NULL if nothing found
 search_list <- function(lst, target, path = character()) {

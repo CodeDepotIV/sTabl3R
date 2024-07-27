@@ -10,7 +10,7 @@
 #' continues.
 #'
 #' @param df A [data.frame()] object. See `FORMATTING` in [generate_statistics()].
-#' @param group A grouping variable.
+#' @param group A grouping variable (typically a character string).
 #'
 #' @examples
 #' data(mtcars)
@@ -78,8 +78,6 @@ check_input <- function(df, group) {
 #' a column in the data frame that will be used to distinguish the groups that
 #' are to be compared statistically. A single group can be generated as shown in
 #' the examples below for the ``mtcars`` dataset.
-#'
-#' TODO: Consider writing accessors for the output to ease data extraction.
 #'
 #' @param df A [data.frame()] object.
 #' @param group A character string specifying the grouping variable. Must be a column in the dataframe. 
@@ -600,7 +598,7 @@ generate_statistics <- function(df, group = "Group", force_nonparametric = F){
 #' @param results A list from [generate_statistics()] that contains the
 #' results of the statistical tests. It should be an S3 object of class `sTable`
 #' for multiple group comparisons or `ssTable` for single group comparisons.
-#' @param font_size Integer. The font size for the flextables. Default is 12.
+#' @param font_size An integer that specifies the font size for the flextables. Default is 12.
 #' @param print_categorical Logical. Should the categorical results, if present, 
 #' be included in the output. Default is TRUE.
 #' @param print_continuous Logical. Should the continuous results, if present, 
@@ -1403,43 +1401,4 @@ logistic_summary <- function(model) {
   )
   
   return(result)
-}
-
-flag_high_cardinality <- function(df, threshold=NULL, 
-                                  group_null = "Not_a_group") 
-{
-  
-  # If no threshold is provided, set it to 5% of the number of observations
-  if (is.null(threshold)) {
-    threshold <- ceiling(nrow(df) * 0.05) |> as.integer()
-  }
-  
-  # Check if the threshold is a reasonable integer
-  if (!is.integer(threshold) | threshold < 1) {
-    stop("Threshold must be a positive integer.")
-  }
-  
-  
-  if (!group_null %in% names(df)) {
-    # This is just for the format checking
-    df[[group_null]] <- "Null_Group"
-  }
-  
-  df <- sTabl3R::check_input(df, group = group_null)
-  
-  df <- df |> select(-1) # First column is unique ID, disregard
-  
-  high_cardinality_cols <- character(0)
-  
-  for (col in names(df)) {
-    if (!is.numeric(df[[col]])) {  # if the column is non-numeric
-      unique_values <- length(unique(df[[col]]))
-      if (unique_values > threshold) {
-        high_cardinality_cols <- c(high_cardinality_cols, col)
-      }
-    }
-  }
-  
-  return(high_cardinality_cols)
-  
 }

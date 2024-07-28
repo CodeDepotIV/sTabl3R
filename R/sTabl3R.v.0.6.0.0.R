@@ -1191,8 +1191,12 @@ summary.sTable <- function(x, ...){
   cont_vars <- names(x$Continuous)
   if (!is.null(cont_vars)) {
     cat("Continuous Variables:\n")
+    
     for (var in cont_vars) {
-      cat("  ", var, "\n")  
+    # Look up p values and append asterisks
+      p_val <- x$Continuous[[var]]$P_Value
+      asterisks <- annotate_asterisks(p_val )
+      cat("  ", var, " ", asterisks, "\n")  
     }
   }
   
@@ -1200,7 +1204,9 @@ summary.sTable <- function(x, ...){
   if (!is.null(cat_vars)) {
     cat("Categorical Variables:\n")
     for (var in cat_vars) {
-      cat("  ", var, "\n")  
+      p_val <- x$Categorica[[var]]$P_Value
+      asterisks <- annotate_asterisks(p_val )
+      cat("  ", var, " ", asterisks, "\n")  
     }
   }
 }

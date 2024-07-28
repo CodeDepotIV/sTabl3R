@@ -1191,8 +1191,12 @@ summary.sTable <- function(x, ...){
   cont_vars <- names(x$Continuous)
   if (!is.null(cont_vars)) {
     cat("Continuous Variables:\n")
+    
     for (var in cont_vars) {
-      cat("  ", var, "\n")  
+    # Look up p values and append asterisks
+      p_val <- x$Continuous[[var]]$P_Value
+      asterisks <- annotate_asterisks(p_val )
+      cat("  ", var, " ", asterisks, "\n")  
     }
   }
   
@@ -1200,7 +1204,9 @@ summary.sTable <- function(x, ...){
   if (!is.null(cat_vars)) {
     cat("Categorical Variables:\n")
     for (var in cat_vars) {
-      cat("  ", var, "\n")  
+      p_val <- x$Categorica[[var]]$P_Value
+      asterisks <- annotate_asterisks(p_val )
+      cat("  ", var, " ", asterisks, "\n")  
     }
   }
 }
@@ -1427,6 +1433,21 @@ search_list <- function(lst, target, path = character()) {
   return(NULL)
 }
 
+# Function to help add asterisks to summary.sTable() output
+annotate_asterisks <- function(p_value) {
+  asterisks <- if (p_value <= 0.001) {
+    "***"
+  } else if (p_value <= 0.01) {
+    "**"
+  } else if (p_value <= 0.05) {
+    "*"
+  } else {
+    ""
+  }
+ 
+  return(asterisks)
+}
+                           
 # Secret function that has nothing to do with the package in its current form
 # Just makes the steps of sorting logit a bit easier                           
 logistic_summary <- function(model) {
